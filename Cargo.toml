@@ -1,0 +1,36 @@
+[package]
+name = "automap"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[dependencies]
+bitflags = "2.10.0"
+derive_more = { version = "2.0.1", features = ["debug", "try_from"] }
+futures-lite = { version = "2.0", optional = true }
+# Runtime-agnostic nusb - features selected via our feature flags
+nusb = { version = "0.2.1", default-features = false }
+smol = { version = "2.0", optional = true }
+# Optional runtime dependencies
+tokio = { version = "^1.48.0", features = [
+  "io-std",
+  "io-util",
+  "macros",
+  "rt",
+  "signal"
+], optional = true }
+
+[dev-dependencies]
+tokio = { version = "^1.48.0", features = [
+  "io-std",
+  "io-util",
+  "macros",
+  "rt",
+  "signal"
+] }
+tokio-macros = "2.6.0"
+
+[features]
+default = ["smol"]
+smol = ["dep:futures-lite", "dep:smol", "nusb/smol"]
+tokio = ["dep:tokio", "nusb/tokio"]
