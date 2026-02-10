@@ -430,7 +430,7 @@ fn split_header(frame: &[u8]) -> Result<(ProtoFamily, u8, u8, &[u8]), DecodeErro
     if frame.len() < 12 {
         return Err(DecodeError::Truncated);
     }
-    if &frame[0..5] != &NOVATION_ID {
+    if frame[0..5] != NOVATION_ID {
         return Err(DecodeError::BadHeader);
     }
     let fam = frame[5];
@@ -514,7 +514,7 @@ fn decode_lcd_ops<'a>(mut s: &'a [u8]) -> Result<Vec<LcdOp<'a>>, DecodeError> {
                 }
                 let code = s[0];
                 s = &s[1..];
-                let op = if code == 0x0A {
+                if code == 0x0A {
                     if s.is_empty() {
                         return Err(DecodeError::Truncated);
                     }
@@ -534,8 +534,7 @@ fn decode_lcd_ops<'a>(mut s: &'a [u8]) -> Result<Vec<LcdOp<'a>>, DecodeError> {
                         0x09 => LcdClear::RightBottomLine,
                         _ => return Err(DecodeError::Invalid),
                     })
-                };
-                op
+                }
             }
             0x03 => {
                 if s.is_empty() {
@@ -581,7 +580,7 @@ fn decode_dbsim<'a>(body: &'a [u8]) -> Result<DbSimMsg<'a>, DecodeError> {
             let sub = s[0];
             s = &s[1..];
             match sub {
-                0x00 | 0x01 | 0x02 => {
+                0x00..=0x02 => {
                     // write
                     let (target, need_cn) = match sub {
                         0x00 => (DbTarget::Control, true),
@@ -610,7 +609,7 @@ fn decode_dbsim<'a>(body: &'a [u8]) -> Result<DbSimMsg<'a>, DecodeError> {
                         data: s,
                     }
                 }
-                0x03 | 0x04 | 0x05 => {
+                0x03..=0x05 => {
                     // read
                     let (target, need_cn) = match sub {
                         0x03 => (DbTarget::Control, true),

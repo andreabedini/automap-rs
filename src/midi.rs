@@ -55,7 +55,7 @@ pub(crate) fn usbmidi_pack(midi: &[u8]) -> Vec<u8> {
             let sysex_data = &midi[i..end];
             let len = sysex_data.len();
 
-            if len >= 1 && len <= 3 {
+            if (1..=3).contains(&len) {
                 let cin = match len {
                     1 => 0x05, // Single-byte system common
                     2 => 0x06, // Two-byte system common
@@ -75,10 +75,8 @@ pub(crate) fn usbmidi_pack(midi: &[u8]) -> Vec<u8> {
                             3 => 0x07,
                             _ => 0x07,
                         }
-                    } else if chunk[0] == 0xF0 {
-                        0x04 // SysEx start
                     } else {
-                        0x04 // SysEx continue
+                        0x04 // SysEx start or continue
                     };
 
                     let mut packet = [cin, 0, 0, 0];

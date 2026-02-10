@@ -174,7 +174,7 @@ fn decode_clicks(vv: u8) -> i8 {
 }
 
 impl AutomapEvent {
-    pub fn decode_event<'a>(body: &'a [u8]) -> Result<AutomapEvent, DecodeError> {
+    pub fn decode_event(body: &[u8]) -> Result<AutomapEvent, DecodeError> {
         if body.len() != 3 {
             return Err(DecodeError::Truncated);
         }
@@ -217,7 +217,7 @@ impl AutomapEvent {
                         button: AutomapButton::try_from(nn).unwrap(), // safe due to match range
                         pressed: vv != 0x40,
                     }),
-                    _ => return Ok(AutomapEvent::Raw { cc: nn, value: vv }),
+                    _ => Ok(AutomapEvent::Raw { cc: nn, value: vv }),
                 }
             }
             0x4E => Ok(AutomapEvent::PreviewButton { pressed: vv != 0 }),

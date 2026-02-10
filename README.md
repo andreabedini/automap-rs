@@ -1,5 +1,7 @@
 # automap-rs
 
+[![CI](https://github.com/andreabedini/automap-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/andreabedini/automap-rs/actions/workflows/ci.yml)
+
 A Rust library for controlling Novation ZeRO MkII hardware via USB MIDI.
 
 > **⚠️ Early Development:** This library is in active development. The API may change.
